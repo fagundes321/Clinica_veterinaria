@@ -1,9 +1,6 @@
 <?php 
     require __DIR__ . '/config.php';
 
-    echo '<pre>'; 
-    var_dump($teste = new AnimalController()); 
-    echo '</pre>'; exit;
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -14,14 +11,18 @@
     <link rel="stylesheet" href="css/estilo.css">
 </head>
 <body>
-    <!-- <section id="area-busca">
+    <section id="area-busca">
         <input type="text" placeholder="Informe nome do animal">
         <button>Buscar</button>
     </section>
 
     <section id="resultados">
 
-        <div class="caixaAnimal">
+        <?php 
+            $animalView = new AnimalView();
+            $animalView->exibirTodosAnimais();
+        ?>
+        <!-- <div class="caixaAnimal">
             <a href="atendimento.html">
                 <img src="images/brutus.png">    
                 <div>
@@ -79,12 +80,12 @@
                     <p>Fox Paulistinha</p>
                 </div>
             </a>
-        </div>
+        </div> -->
 
         
 
 
 
-    </section> -->
+    </section>
 </body>
 </html>
