@@ -26,10 +26,21 @@ class AnimalController
             while ($dados = $stmt->fetch(PDO::FETCH_ASSOC)) 
                 {
                 $codigoEspecie = $dados['cd_especie'];
-                $nome        = $dados['nm_animal'];
+                $nome          = $dados['nm_animal'];
                 $codigo        = $dados['cd_animal'];
 
-                $animal = new AnimalModel($codigo, $nome, $codigoEspecie);
+                    $sql_especie = "SELECT nm_especie FROM `especie` WHERE cd_especie = :codigoEspecie";
+                    $stmt_especie = $this->db->prepare($sql_especie);
+                    $stmt_especie->bindParam(":codigoEspecie", $codigoEspecie);
+                    $stmt_especie->execute();
+
+                    $dadosEspecie = $stmt_especie->fetch(PDO::FETCH_ASSOC);
+                    $nomeEspecie = $dadosEspecie['nm_especie'];
+
+                    $especie = new EspecieModel($codigoEspecie, $nomeEspecie);
+                // $stmt_especie = db->prepare("SELECT nm_especie FROM `especie` WHERE cd_especie = $codigoEspecie");
+
+                $animal = new AnimalModel($codigo, $nome, $especie);
                 // array_push é responsavel por acrescentar no final de um array um novo item 
                 array_push($lista, $animal);
 
