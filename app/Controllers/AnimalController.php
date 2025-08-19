@@ -56,4 +56,53 @@ class AnimalController
         // no final eu retorno a lista para eu ter acesso no lado de fora da função
         return $lista;
     }
+
+    function BuscarNome($nome){
+    $lista = [];
+
+    try 
+    {
+        // Agora filtra pelo nome do animal
+        $sql = "SELECT `cd_animal`, `nm_animal`, `cd_especie` 
+                FROM animal 
+                WHERE nm_animal LIKE :nome";
+        $stmt = $this->db->prepare($sql);
+        $nomeBusca = "%" . $nome . "%"; // busca parcial
+        $stmt->bindParam(":nome", $nomeBusca);
+        $stmt->execute();
+
+        while ($dados = $stmt->fetch(PDO::FETCH_ASSOC)) 
+        {
+            $codigoEspecie = $dados['cd_especie'];
+            $nomeAnimal    = $dados['nm_animal'];
+            $codigoAnimal  = $dados['cd_animal'];
+
+            // Buscar nome da espécie
+            $sql_especie = "SELECT nm_especie FROM `especie` WHERE cd_especie = :codigoEspecie";
+            $stmt_especie = $this->db->prepare($sql_especie);
+            $stmt_especie->bindParam(":codigoEspecie", $codigoEspecie);
+            $stmt_especie->execute();
+
+            $dadosEspecie = $stmt_especie->fetch(PDO::FETCH_ASSOC);
+            $nomeEspecie = $dadosEspecie['nm_especie'];
+
+            // Criar objeto espécie corretamente
+            $especie = new EspecieModel($codigoEspecie, $nomeEspecie);
+
+            // Criar objeto animal
+            $animal = new AnimalModel($codigoAnimal, $nomeAnimal, $especie);
+
+            array_push($lista, $animal);
+        }
+
+        $this->db = null;
+    } 
+    catch (PDOException $e) 
+    {
+        echo "Erro: " . $e->getMessage();
+    }
+
+    return $lista;
+}
+
 }
